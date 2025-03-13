@@ -1,0 +1,13 @@
+___       ___                                                                                                   ____
+`MMb     dMM'68b                                                                68b         68b                 `MM'
+ MMM.   ,PMM Y89                                                                Y89         Y89                  MM   /
+ M`Mb   d'MM ___   ____  ___  __   _____     ____     ____  ___  __ ____    ___ ___   ____  ___   _____          MM  /M      ____  ___  __    __     ____
+ M YM. ,P MM `MM  6MMMMb.`MM 6MM  6MMMMMb   6MMMMb\  6MMMMb `MM 6MM `MM(    )M' `MM  6MMMMb.`MM  6MMMMMb         MM /MMMMM  6MMMMb `MM 6MMb  6MMb   6MMMMb\
+ M `Mb d' MM  MM 6M'   Mb MM69 " 6M'   `Mb MM'    ` 6M'  `Mb MM69 "  `Mb    d'   MM 6M'   Mb MM 6M'   `Mb        MM  MM    6M'  `Mb MM69 `MM69 `Mb MM'    `
+ M  YM.P  MM  MM MM    `' MM'    MM     MM YM.      MM    MM MM'      YM.  ,P    MM MM    `' MM MM     MM        MM  MM    MM    MM MM'   MM'   MM YM.
+ M  `Mb'  MM  MM MM       MM     MM     MM  YMMMMb  MMMMMMMM MM        MM  M     MM MM       MM MM     MM        MM  MM    MMMMMMMM MM    MM    MM  YMMMMb
+ M   YP   MM  MM MM       MM     MM     MM      `Mb MM       MM        `Mbd'     MM MM       MM MM     MM        MM  MM    MM       MM    MM    MM      `Mb
+ M   `'   MM  MM YM.   d9 MM     YM.   ,M9 L    ,MM YM    d9 MM         YMP      MM YM.   d9 MM YM.   ,M9        MM  YM.  ,YM    d9 MM    MM    MM L    ,MM
+_M_      _MM__MM_ YMMMM9 _MM_     YMMMMM9  MYMMMM9   YMMMM9 _MM_         M      _MM_ YMMMM9 _MM_ YMMMMM9        _MM_  YMMM9 YMMMM9 _MM_  _MM_  _MM_MYMMMM9
+${application.title} ${application.version}
+Powered by Spring Boot ${spring-boot.version}
