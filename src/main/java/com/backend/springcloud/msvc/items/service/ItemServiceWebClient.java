@@ -40,7 +40,7 @@ public class ItemServiceWebClient implements IItemService {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
 
-        try {
+        //try {
             return Optional.ofNullable(client.build()
                     .get()
                     .uri("/find/{id}", params)
@@ -49,9 +49,9 @@ public class ItemServiceWebClient implements IItemService {
                     .bodyToMono(Product.class)
                     .map(product -> new Item(product, new Random().nextInt(10) + 1))
                     .block());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        //} catch (Exception e) {
+        //    return Optional.empty();
+       // }
 
 
     }
