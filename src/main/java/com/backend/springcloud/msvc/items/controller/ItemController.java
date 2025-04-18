@@ -3,6 +3,8 @@ package com.backend.springcloud.msvc.items.controller;
 import com.backend.springcloud.msvc.items.model.Item;
 import com.backend.springcloud.msvc.items.model.Product;
 import com.backend.springcloud.msvc.items.service.IItemService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/items")
@@ -45,7 +48,7 @@ public class ItemController {
     public ResponseEntity<?> findItem(@PathVariable long id) {
 
         Optional<?> optionalItem = circuitBreakerFactory.create("items").run(() -> itemService.findById(id), e -> {
-            LOGGER.info("error: >>> " + e.getMessage());
+            LOGGER.error("error: >>> \t" + e.getMessage());
             Product product = new Product();
             product.setName("Circuit Breaker");
             product.setCreateAt(LocalDate.now());
@@ -60,4 +63,63 @@ public class ItemController {
                         , HttpStatus.NOT_FOUND));
 
     }
+
+
+    @GetMapping("/find/details/{id}")
+    @CircuitBreaker(name = "items", fallbackMethod = "handlerFallbackMethodProduct")
+    public ResponseEntity<?> findItemDetails(@PathVariable long id) {
+
+        Optional<?> optionalItem = itemService.findById(id);
+
+        return optionalItem.map(item -> new ResponseEntity<>(item, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(
+                        Collections.singletonMap("message", "No existe el producto en el microservice msvc-productos")
+                        , HttpStatus.NOT_FOUND));
+
+    }
+
+    public ResponseEntity<?> handlerFallbackMethodProduct(Throwable e) {
+
+        LOGGER.error("error: >>> \t" + e.getMessage());
+        Product product = new Product();
+        product.setName("Circuit Breaker");
+        product.setCreateAt(LocalDate.now());
+        product.setId(1L);
+        product.setPrice(500.0);
+        return ResponseEntity.ok(new Item(product, 5));
+
+    }
+
+    @GetMapping("/find/details2/{id}")
+    @CircuitBreaker(name = "items", fallbackMethod = "handlerFallbackMethodProduct2")
+    @TimeLimiter(name = "items")
+    public CompletableFuture<?> findItemDetails2(@PathVariable long id) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<?> optionalItem = itemService.findById(id);
+
+            return optionalItem.map(item -> new ResponseEntity<>(item, HttpStatus.OK))
+                    .orElseGet(() -> new ResponseEntity<>(
+                            Collections.singletonMap("message", "No existe el producto en el microservice msvc-productos")
+                            , HttpStatus.NOT_FOUND));
+        });
+    }
+
+
+    public CompletableFuture<?> handlerFallbackMethodProduct2(Throwable e) {
+
+        return CompletableFuture.supplyAsync(() -> {
+            LOGGER.error("error: >>> \t " + e.getMessage());
+            Product product = new Product();
+            product.setName("Circuit Breaker");
+            product.setCreateAt(LocalDate.now());
+            product.setId(1L);
+            product.setPrice(500.0);
+            return ResponseEntity.ok(new Item(product, 5));
+        });
+
+
+    }
+
+
 }

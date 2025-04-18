@@ -4,6 +4,8 @@ import com.backend.springcloud.msvc.items.client.ProductFeignClient;
 import com.backend.springcloud.msvc.items.model.Item;
 import com.backend.springcloud.msvc.items.model.Product;
 import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +15,17 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
+//@Primary
 public class ItemServiceFeign implements IItemService {
-
+    private final Logger LOGGER = LoggerFactory.getLogger(ItemServiceFeign.class);
     @Autowired
     private ProductFeignClient productFeignClient;
 
 
     @Override
     public List<Item> findAll() {
+        LOGGER.info(">>> Procces Feign findAll \n");
+
         List<Item> listItems = productFeignClient.listarProductos()
                 .stream()
                 .map(product -> new Item(product, new Random().nextInt(10) + 1)).collect(Collectors.toList());
@@ -34,6 +39,8 @@ public class ItemServiceFeign implements IItemService {
 
     @Override
     public Optional<Item> findById(Long id) {
+        LOGGER.info(">>> Procces Feign findById \n");
+
         try {
             Product product = productFeignClient.buscarProducto(id);
             return Optional.of(new Item(product, new Random().nextInt(10) + 1));

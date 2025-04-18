@@ -37,6 +37,7 @@ public class ItemServiceWebClient implements IItemService {
 
     @Override
     public Optional<Item> findById(Long id) {
+        System.out.println("webclientOK");
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
 
