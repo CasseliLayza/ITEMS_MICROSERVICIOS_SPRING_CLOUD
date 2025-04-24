@@ -2,7 +2,6 @@ package com.backend.springcloud.msvc.items.service;
 
 import com.backend.springcloud.msvc.items.model.Item;
 import com.backend.springcloud.msvc.items.model.Product;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -42,18 +41,62 @@ public class ItemServiceWebClient implements IItemService {
         params.put("id", id);
 
         //try {
-            return Optional.ofNullable(client.build()
-                    .get()
-                    .uri("/find/{id}", params)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .retrieve()
-                    .bodyToMono(Product.class)
-                    .map(product -> new Item(product, new Random().nextInt(10) + 1))
-                    .block());
+        return Optional.ofNullable(client.build()
+                .get()
+                .uri("/find/{id}", params)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(Product.class)
+                .map(product -> new Item(product, new Random().nextInt(10) + 1))
+                .block());
         //} catch (Exception e) {
         //    return Optional.empty();
-       // }
+        // }
 
 
+    }
+
+    @Override
+    public Product save(Product product) {
+        return client.build()
+                .post()
+                .uri("/create")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(product)
+                .retrieve()
+                .bodyToMono(Product.class)
+                .block();
+    }
+
+    @Override
+    public Product update(Product product, Long id) {
+        System.out.println("webclientOK");
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        return client.build()
+                .put()
+                .uri("/update/{id}", params)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(product)
+                .retrieve()
+                .bodyToMono(Product.class)
+                .block();
+    }
+
+    @Override
+    public void delete(Long id) {
+        System.out.println("webclientOK");
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+
+        client.build()
+                .delete()
+                .uri("/delete/{id}", params)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(Product.class)
+                .block();
     }
 }

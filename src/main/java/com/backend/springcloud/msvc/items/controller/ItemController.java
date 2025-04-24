@@ -7,26 +7,34 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/items")
 @CrossOrigin(originPatterns = "*")
+@RefreshScope
 public class ItemController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ItemController.class);
     private final IItemService itemService;
     private final CircuitBreakerFactory circuitBreakerFactory;
+    @Value("${configuracion.texto}")
+    private String texto;
+
+    @Autowired
+    private Environment environment;
 
     public ItemController(@Qualifier("itemServiceWebClient") IItemService iItemService, CircuitBreakerFactory circuitBreakerFactory) {
         this.itemService = iItemService;
@@ -119,6 +127,39 @@ public class ItemController {
         });
 
 
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<Product> save(@RequestBody Product product) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(product));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Product> update(@RequestBody Product product, @PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(itemService.update(product, id));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        itemService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonMap("message", "Producto eliminado correctamente"));
+    }
+
+    @GetMapping("/fetch-configs")
+    public ResponseEntity<?> fetchConfigs(@Value("${server.port}") String port) {
+        Map<String, String> jsonConfigs = new HashMap<>();
+        jsonConfigs.put("texto", texto);
+        jsonConfigs.put("port", port);
+
+        LOGGER.info("Texto: " + texto);
+        LOGGER.info("Port: " + port);
+
+        if (environment.getActiveProfiles().length > 0 && environment.getActiveProfiles()[0].equals("dev")) {
+            jsonConfigs.put("autor.nombre", environment.getProperty("configuracion.autor.nombre"));
+            jsonConfigs.put("autor.email", environment.getProperty("configuracion.autor.email"));
+
+        }
+        return ResponseEntity.ok(jsonConfigs);
     }
 
 
