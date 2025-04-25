@@ -1,5 +1,7 @@
 package com.backend.springcloud.msvc.items.model;
 
+import com.backend.lib.mcsv.commons.entity.Product;
+
 public class Item {
     private Product product;
     private int quantity;
@@ -28,8 +30,8 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public double getTotal(){
-        return product.getPrice()*quantity;
+    public double getTotal() {
+        return product.getPrice() * quantity;
     }
 
     /*public String getSerie(){

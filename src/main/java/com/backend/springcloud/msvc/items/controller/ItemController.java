@@ -1,7 +1,7 @@
 package com.backend.springcloud.msvc.items.controller;
 
+import com.backend.lib.mcsv.commons.entity.Product;
 import com.backend.springcloud.msvc.items.model.Item;
-import com.backend.springcloud.msvc.items.model.Product;
 import com.backend.springcloud.msvc.items.service.IItemService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
@@ -36,7 +36,7 @@ public class ItemController {
     @Autowired
     private Environment environment;
 
-    public ItemController(@Qualifier("itemServiceWebClient") IItemService iItemService, CircuitBreakerFactory circuitBreakerFactory) {
+    public ItemController(@Qualifier("itemServiceFeign") IItemService iItemService, CircuitBreakerFactory circuitBreakerFactory) {
         this.itemService = iItemService;
         this.circuitBreakerFactory = circuitBreakerFactory;
     }
@@ -129,7 +129,7 @@ public class ItemController {
 
     }
 
-    @PostMapping("/save")
+    @PostMapping("/create")
     public ResponseEntity<Product> save(@RequestBody Product product) {
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(product));
     }

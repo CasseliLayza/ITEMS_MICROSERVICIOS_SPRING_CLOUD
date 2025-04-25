@@ -1,7 +1,7 @@
 package com.backend.springcloud.msvc.items.service;
 
+import com.backend.lib.mcsv.commons.entity.Product;
 import com.backend.springcloud.msvc.items.model.Item;
-import com.backend.springcloud.msvc.items.model.Product;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -58,6 +58,7 @@ public class ItemServiceWebClient implements IItemService {
 
     @Override
     public Product save(Product product) {
+        System.out.println("webclientOK");
         return client.build()
                 .post()
                 .uri("/create")

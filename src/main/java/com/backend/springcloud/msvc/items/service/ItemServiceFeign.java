@@ -1,8 +1,8 @@
 package com.backend.springcloud.msvc.items.service;
 
+import com.backend.lib.mcsv.commons.entity.Product;
 import com.backend.springcloud.msvc.items.client.ProductFeignClient;
 import com.backend.springcloud.msvc.items.model.Item;
-import com.backend.springcloud.msvc.items.model.Product;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,16 +53,23 @@ public class ItemServiceFeign implements IItemService {
 
     @Override
     public Product save(Product product) {
-        return null;
+        LOGGER.info(">>> Procces Feign save \n");
+        return productFeignClient.crearProducto(product);
     }
 
     @Override
     public Product update(Product product, Long id) {
-        return null;
+        LOGGER.info(">>> Procces Feign update \n");
+        return productFeignClient.actualizarProducto(product, id);
     }
 
     @Override
     public void delete(Long id) {
-
+        LOGGER.info(">>> Procces Feign delete \n");
+        try {
+            productFeignClient.eliminarProducto(id);
+        } catch (FeignException e) {
+            LOGGER.error("Error: " + e.getMessage());
+        }
     }
 }
