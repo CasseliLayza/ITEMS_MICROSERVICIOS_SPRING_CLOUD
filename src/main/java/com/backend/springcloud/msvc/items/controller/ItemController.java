@@ -45,8 +45,9 @@ public class ItemController {
     @GetMapping("/list")
     public List<Item> list(@RequestParam(name = "name", required = false) String name,
                            @RequestHeader(name = "token-request", required = false) String token) {
-        System.out.println("name = " + name);
-        System.out.println("token-request = " + token);
+        LOGGER.info("llamada al metodo del controller ItemController::list");
+        LOGGER.info("Request parameter: {}", name);
+        LOGGER.info("token-request {} ", token);
 
         return itemService.findAll();
     }
@@ -131,17 +132,20 @@ public class ItemController {
 
     @PostMapping("/create")
     public ResponseEntity<Product> save(@RequestBody Product product) {
+        LOGGER.info("Guardando producto: {}", product);
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(product));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<Product> update(@RequestBody Product product, @PathVariable Long id) {
+        LOGGER.info("Actualizando producto: {}", product);
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.update(product, id));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         itemService.delete(id);
+        LOGGER.info("Eliminando producto con id: {}", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(Collections.singletonMap("message", "Producto eliminado correctamente"));
     }
 
@@ -159,7 +163,7 @@ public class ItemController {
             jsonConfigs.put("autor.email", environment.getProperty("configuracion.autor.email"));
 
         }
-        return ResponseEntity.ok(jsonConfigs);
+            return ResponseEntity.ok(jsonConfigs);
     }
 
 

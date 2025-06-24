@@ -12,9 +12,10 @@ import java.util.*;
 //@Primary
 public class ItemServiceWebClient implements IItemService {
 
-    private final WebClient.Builder client;
+    //private final WebClient.Builder client;
+    private final WebClient client;
 
-    public ItemServiceWebClient(WebClient.Builder client) {
+    public ItemServiceWebClient(WebClient client) {
         this.client = client;
     }
 
@@ -23,7 +24,8 @@ public class ItemServiceWebClient implements IItemService {
     public List<Item> findAll() {
         System.out.println("webclientOK");
 
-        return client.build()
+        //return client.build()
+        return client
                 .get()
                 .uri("/list")
                 .accept(MediaType.APPLICATION_JSON)
@@ -41,7 +43,8 @@ public class ItemServiceWebClient implements IItemService {
         params.put("id", id);
 
         //try {
-        return Optional.ofNullable(client.build()
+        //return Optional.ofNullable(client.build()
+        return Optional.ofNullable(client
                 .get()
                 .uri("/find/{id}", params)
                 .accept(MediaType.APPLICATION_JSON)
@@ -59,7 +62,8 @@ public class ItemServiceWebClient implements IItemService {
     @Override
     public Product save(Product product) {
         System.out.println("webclientOK");
-        return client.build()
+        //return client.build()
+        return client
                 .post()
                 .uri("/create")
                 .accept(MediaType.APPLICATION_JSON)
@@ -75,7 +79,7 @@ public class ItemServiceWebClient implements IItemService {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
 
-        return client.build()
+        return client
                 .put()
                 .uri("/update/{id}", params)
                 .accept(MediaType.APPLICATION_JSON)
@@ -92,7 +96,7 @@ public class ItemServiceWebClient implements IItemService {
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
 
-        client.build()
+        client
                 .delete()
                 .uri("/delete/{id}", params)
                 .accept(MediaType.APPLICATION_JSON)

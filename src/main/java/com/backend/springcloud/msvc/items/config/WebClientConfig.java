@@ -3,6 +3,7 @@ package com.backend.springcloud.msvc.items.config;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,10 +24,15 @@ public class WebClientConfig {
         System.out.println("✅ URL correctamente cargada: " + url);
     }
 
-    @Bean
+/*    @Bean
     @LoadBalanced
     WebClient.Builder webClient() {
         return WebClient.builder().baseUrl(url);
-    }
+    }*/
 
+
+    @Bean
+    WebClient webClient(WebClient.Builder webClientBuilder, ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+        return webClientBuilder.baseUrl(url).filter(lbFunction).build();
+    }
 }
