@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.backend.springcloud.msvc.items</groupId>
-    <artifactId>Microservicios_Cloud_Items</artifactId>
+    <artifactId>ITEMS_MICROSERVICIOS_SPRING_CLOUD</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Microservicios_Cloud_Items</name>
+    <name>ITEMS_MICROSERVICIOS_SPRING_CLOUD</name>
     <description>Microservicios_Cloud_Items</description>
     <url/>
     <licenses>
