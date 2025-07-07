@@ -1,0 +1,42 @@
+name: CICD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Clone common lib
+        run: |
+          git clone https://github.com/CasseliLayza/MICROSERVICIOS_SPRING_CLOUD_COMMONS_LIB.git
+          cd MICROSERVICIOS_SPRING_CLOUD_COMMONS_LIB
+          mvn clean install
+      - name: Build Project
+        run: mvn clean install -DskipTests
+      - name: login to docker hub
+        run: echo ${{secrets.DOCKER_HUB_ACCESS_TOKEN}} | docker login -u ${{secrets.DOCKER_HUB}} --password-stdin
+      - name: Build docker image
+        run: docker build -t casseli/ms-items .
+      - name: Publish image to docker hub
+        run: docker push casseli/ms-items:latest
+
+  deploy:
+    needs: build
+    runs-on: [self-hosted]
+    steps:
+      - name: Start deployment
+        run: |
+          cd ~/applications 
+          sudo docker compose down ms-items
+          sudo docker rmi -f casseli/ms-items
+          sudo docker compose up ms-items -d
